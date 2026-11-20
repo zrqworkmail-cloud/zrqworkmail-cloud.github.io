@@ -1,0 +1,330 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="color-scheme" content="light dark">
+<title>Ruoquan Zhou — 小工具，解决大麻烦</title>
+<meta name="description" content="Zotero 插件、Windows 桌面应用与桌面自动化工具。Ruoquan Zhou 的个人作品集。">
+<meta name="author" content="Ruoquan Zhou">
+<meta property="og:type" content="website">
+<meta property="og:title" content="Ruoquan Zhou — 小工具，解决大麻烦">
+<meta property="og:description" content="Zotero 插件、Windows 桌面应用与桌面自动化工具。">
+<meta property="og:url" content="https://zrqworkmail-cloud.github.io/">
+<link rel="canonical" href="https://zrqworkmail-cloud.github.io/">
+
+<!-- 主题：在首帧前应用已保存的选择，避免闪白 -->
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' fill='%23b23a1e'/%3E%3Ctext x='50' y='74' font-size='64' font-family='Georgia,serif' fill='%23f2f0e9' text-anchor='middle'%3ER%3C/text%3E%3C/svg%3E">
+<script>try{var t=localStorage.getItem('theme');if(t)document.documentElement.setAttribute('data-theme',t);}catch(e){}</script>
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "Person",
+  "name": "Ruoquan Zhou",
+  "url": "https://zrqworkmail-cloud.github.io/",
+  "jobTitle": "Independent Developer",
+  "sameAs": ["https://github.com/zrqworkmail-cloud"],
+  "knowsAbout": ["Zotero Plugins", "Desktop Automation", "UI Automation", "TypeScript", "C#"]
+}
+</script>
+
+<style>
+/* ============ 浅色（默认） ============ */
+:root{
+  --paper:#f2f0e9; --ink:#15140f; --dim:#6b6659; --rule:#d8d4c8; --acc:#b23a1e;
+  --dot:rgba(0,0,0,.035); --sel:rgba(178,58,30,.14);
+  --serif:"Songti SC","Source Han Serif SC","SimSun",Georgia,"Times New Roman",serif;
+  --sans:-apple-system,BlinkMacSystemFont,"Segoe UI","PingFang SC","Microsoft YaHei",sans-serif;
+  --mono:ui-monospace,SFMono-Regular,Consolas,"Liberation Mono",monospace;
+}
+/* ============ 深色：跟随系统 ============ */
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme="light"]){
+    --paper:#131311; --ink:#eceae1; --dim:#928d80; --rule:#2c2c27; --acc:#e2603c;
+    --dot:rgba(255,255,255,.028); --sel:rgba(226,96,60,.22);
+  }
+}
+/* ============ 深色：手动切换 ============ */
+:root[data-theme="dark"]{
+  --paper:#131311; --ink:#eceae1; --dim:#928d80; --rule:#2c2c27; --acc:#e2603c;
+  --dot:rgba(255,255,255,.028); --sel:rgba(226,96,60,.22);
+}
+
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%;scroll-behavior:smooth}
+body{
+  margin:0; background:var(--paper); color:var(--ink);
+  font:16px/1.7 var(--sans); -webkit-font-smoothing:antialiased;
+  background-image:radial-gradient(circle at 1px 1px, var(--dot) 1px, transparent 0);
+  background-size:4px 4px;
+  transition:background-color .25s ease, color .25s ease;
+}
+::selection{ background:var(--sel); }
+a{color:inherit}
+.wrap{ max-width:1180px; margin:0 auto; padding:0 34px; }
+
+/* ---------- 顶栏 ---------- */
+.top{
+  display:flex; align-items:center; justify-content:space-between; gap:20px;
+  padding:20px 0 16px; border-bottom:1.5px solid var(--ink);
+}
+.brand{ font-family:var(--serif); font-size:21px; font-weight:700; letter-spacing:-.01em; text-decoration:none; white-space:nowrap; }
+.brand span{ font-family:var(--mono); font-size:10.5px; letter-spacing:.16em; color:var(--dim); margin-left:10px; text-transform:uppercase; font-weight:400; }
+.menu{ display:flex; align-items:center; gap:24px; font-size:13.5px; }
+.menu a{ text-decoration:none; border-bottom:1px solid transparent; padding-bottom:2px; white-space:nowrap; }
+.menu a:hover{ border-color:var(--ink); }
+.theme{
+  font-family:var(--mono); font-size:11.5px; letter-spacing:.06em;
+  background:transparent; color:var(--ink); cursor:pointer;
+  border:1px solid var(--rule); border-radius:999px; padding:5px 12px 6px;
+  transition:border-color .2s, background .2s;
+  white-space:nowrap;
+}
+.theme:hover{ border-color:var(--ink); }
+
+/* ---------- Hero ---------- */
+.hero{ position:relative; padding:74px 0 60px; border-bottom:1px solid var(--rule); }
+.year{
+  position:absolute; right:34px; top:74px;
+  writing-mode:vertical-rl; font-family:var(--mono); font-size:11px;
+  letter-spacing:.34em; color:var(--dim); text-transform:uppercase;
+}
+h1{
+  font-family:var(--serif); font-weight:700;
+  font-size:clamp(44px,7.4vw,104px); line-height:.98; letter-spacing:-.03em;
+  margin:0 0 34px; max-width:13.5em;
+}
+h1 i{ font-style:normal; color:var(--acc); }
+.lede{ display:grid; grid-template-columns:120px 1fr; gap:26px; align-items:start; max-width:790px; }
+.lede dt{ font-family:var(--mono); font-size:10.5px; letter-spacing:.16em; text-transform:uppercase; color:var(--dim); padding-top:5px; }
+.lede dd{ margin:0; font-size:17px; line-height:1.75; }
+.lede dd b{ font-weight:600; border-bottom:1.5px solid var(--acc); }
+
+/* ---------- 索引 ---------- */
+section{ padding:64px 0 0; }
+.head{
+  display:flex; align-items:baseline; justify-content:space-between;
+  border-bottom:1px solid var(--ink); padding-bottom:9px;
+}
+.head h2{ font-family:var(--mono); font-size:11px; letter-spacing:.18em; text-transform:uppercase; font-weight:500; margin:0; }
+.head em{ font-style:normal; font-size:12px; color:var(--dim); }
+
+.row{
+  display:grid; grid-template-columns:56px 1fr 220px 84px; gap:20px; align-items:center;
+  padding:26px 8px; border-bottom:1px solid var(--rule);
+  text-decoration:none; color:inherit; position:relative;
+  transition:background .22s, color .22s, padding-left .22s;
+}
+.row .no{ font-family:var(--mono); font-size:12px; color:var(--dim); letter-spacing:.06em; }
+.row h3{ font-family:var(--serif); font-size:30px; line-height:1.2; margin:0 0 4px; font-weight:700; letter-spacing:-.01em; }
+.row p{ margin:0; font-size:13.5px; color:var(--dim); line-height:1.6; }
+.row .meta{ font-family:var(--mono); font-size:11.5px; color:var(--dim); letter-spacing:.04em; line-height:1.9; }
+.row .go{ font-size:22px; text-align:right; transition:transform .22s, opacity .22s; }
+
+.row:hover{ background:var(--ink); color:var(--paper); padding-left:18px; }
+.row:hover .no,
+.row:hover p,
+.row:hover .meta{ color:inherit; opacity:.62; }
+.row:hover .go{ transform:translateX(6px); }
+
+.row.static{ cursor:default; }
+
+/* ---------- 两栏 ---------- */
+.two{ display:grid; grid-template-columns:1fr 1.35fr; gap:56px; padding-top:78px; }
+.two h2{ font-family:var(--serif); font-size:34px; line-height:1.25; margin:0 0 18px; font-weight:700; letter-spacing:-.015em; }
+.two .note{ font-size:13px; color:var(--dim); font-family:var(--mono); letter-spacing:.02em; line-height:2; }
+.two p{ margin:0 0 16px; font-size:16.5px; line-height:1.8; }
+.drop::first-letter{
+  font-family:var(--serif); font-size:64px; float:left; line-height:.86;
+  padding:6px 12px 0 0; font-weight:700; color:var(--acc);
+}
+
+/* ---------- 底部 ---------- */
+footer{ margin-top:92px; border-top:1.5px solid var(--ink); }
+.foot{ display:flex; justify-content:space-between; align-items:baseline; padding:24px 0 58px; gap:18px; flex-wrap:wrap; }
+.foot .sig{ font-family:var(--serif); font-size:26px; letter-spacing:-.01em; }
+.foot nav{ display:flex; gap:22px; font-size:13px; }
+.foot a{ text-decoration:none; border-bottom:1px solid var(--rule); }
+.foot a:hover{ border-color:var(--ink); }
+
+/* ---------- 响应式 ---------- */
+@media (max-width:820px){
+  .wrap{ padding:0 20px; }
+  .year{ display:none; }
+  h1{ font-size:clamp(38px,10vw,56px); }
+  .lede{ grid-template-columns:1fr; gap:8px; }
+  .row{ grid-template-columns:36px 1fr; gap:12px; padding:20px 4px; }
+  .row .meta{ grid-column:2; }
+  .row .go{ display:none; }
+  .row h3{ font-size:22px; }
+  .row:hover{ padding-left:4px; }
+  .two{ grid-template-columns:1fr; gap:26px; padding-top:56px; }
+  .menu{ gap:14px; font-size:12.5px; }
+  .brand span{ display:none; }
+}
+
+@media (max-width:560px){
+  .top{ flex-wrap:wrap; row-gap:10px; }
+  .brand{ font-size:19px; }
+  .menu{ width:100%; justify-content:space-between; gap:10px; }
+}
+
+@media print{
+  .top .menu, .theme{ display:none; }
+  body{ background:#fff; color:#000; }
+  .row:hover{ background:transparent; color:#000; padding-left:0; }
+}
+</style>
+</head>
+<body>
+
+<div class="wrap">
+  <div class="top">
+    <a class="brand" href="#">Ruoquan Zhou<span>Independent Developer</span></a>
+    <nav class="menu">
+      <a href="#work">作品</a>
+      <a href="#about">关于</a>
+      <a href="https://github.com/zrqworkmail-cloud" target="_blank" rel="noopener">GitHub</a>
+      <button class="theme" id="theme-toggle" type="button" aria-label="切换主题">☾ 深色</button>
+    </nav>
+  </div>
+</div>
+
+<div class="wrap">
+  <div class="hero">
+    <div class="year">Portfolio — MMXXVI</div>
+    <h1>小工具，<br>解决<i>大麻烦</i>。</h1>
+
+    <dl class="lede">
+      <dt>关于</dt>
+      <dd>
+        我做 <b>Zotero 插件</b>、<b>Windows 桌面应用</b>和桌面自动化工具。
+        出发点很朴素：自己每天要用，市面上又找不到顺手的，
+        于是自己写一个，然后一直维护下去。
+      </dd>
+    </dl>
+  </div>
+
+  <section id="work">
+    <div class="head">
+      <h2>Index — 作品</h2>
+      <em>6 项，标注最近一次发布</em>
+    </div>
+
+    <a class="row" href="https://github.com/zrqworkmail-cloud/sentence-translate" target="_blank" rel="noopener">
+      <span class="no">01</span>
+      <div>
+        <h3>Sentence Translate</h3>
+        <p>Zotero 的 PDF 阅读器里点一句就高亮，句下直出译文；点下一句，上一句自动消失。内置四级翻译回退链。</p>
+      </div>
+      <div class="meta">Zotero 10 · TypeScript<br>v0.3.1 — 2026.11</div>
+      <div class="go">→</div>
+    </a>
+
+    <div class="row static">
+      <span class="no">02</span>
+      <div>
+        <h3>Conan Assistant</h3>
+        <p>带桌宠的 Windows 桌面助手。任务栏浮层实时看 CPU / GPU，插件独立升级，发布带 SHA256 校验。</p>
+      </div>
+      <div class="meta">Windows x64 · C# / .NET<br>v5.31.3 — 2026.11</div>
+    </div>
+
+    <div class="row static">
+      <span class="no">03</span>
+      <div>
+        <h3>bg-bridge</h3>
+        <p>UI Automation + COM 的后台自动化桥。关掉 AutoSetFocus 之后，读写窗口控件不再抢前台、不动鼠标。</p>
+      </div>
+      <div class="meta">.NET 8 · UI Automation<br>内部项目 — 2026.11</div>
+    </div>
+
+    <a class="row" href="https://github.com/zotero-chinese/zotero-plugins" target="_blank" rel="noopener">
+      <span class="no">04</span>
+      <div>
+        <h3>Zotero 插件目录采集器</h3>
+        <p>从仓库和 XPI manifest 反推兼容版本，shadow / primary 双模式灰度，提升前自动拦住版本回退与抓取失败。</p>
+      </div>
+      <div class="meta">上游贡献 · TypeScript<br>zotero-chinese</div>
+      <div class="go">→</div>
+    </a>
+
+    <div class="row static">
+      <span class="no">05</span>
+      <div>
+        <h3>hybrid-computer-use 部署</h3>
+        <p>把无障碍树和 GUI 两条通道接进同一个 MCP，供 agent 驱动桌面应用；完成本机构建、注册与焦点校验排障。</p>
+      </div>
+      <div class="meta">MCP · Python<br>本地部署</div>
+    </div>
+
+    <div class="row static">
+      <span class="no">06</span>
+      <div>
+        <h3>Zotero 插件开发规范</h3>
+        <p>把插件从脚手架、构建、发布到更新链路写成可复用规范：版本号比较、catalog 结构、发布前验收清单。</p>
+      </div>
+      <div class="meta">文档 · 工程流程<br>2026</div>
+    </div>
+  </section>
+
+  <section id="about" class="two">
+    <div>
+      <h2>三条底线</h2>
+      <div class="note">
+        本地优先<br>
+        不打扰<br>
+        可验证
+      </div>
+    </div>
+    <div>
+      <p class="drop">
+        我的项目几乎都有同一个形状：装上去，用一次，然后忘掉它。
+        好的工具不该要求你记住它的存在。
+      </p>
+      <p>
+        所以它们不依赖云端、不抢焦点、不发通知；发布带 SHA256 校验，
+        升级链路由自己实测过再放出去。剩下的事情交给用户——
+        他们只需要知道点哪里。
+      </p>
+    </div>
+  </section>
+
+  <footer>
+    <div class="foot">
+      <div class="sig">Ruoquan Zhou</div>
+      <nav>
+        <a href="https://github.com/zrqworkmail-cloud" target="_blank" rel="noopener">GitHub</a>
+        <a href="https://zotero-chinese.com/plugins" target="_blank" rel="noopener">Zotero 中文社区</a>
+      </nav>
+    </div>
+  </footer>
+</div>
+
+<script>
+(function(){
+  var root=document.documentElement;
+  var btn=document.getElementById('theme-toggle');
+  var mq=window.matchMedia('(prefers-color-scheme: dark)');
+
+  function current(){
+    return root.getAttribute('data-theme') || (mq.matches ? 'dark' : 'light');
+  }
+  function paint(){
+    var dark = current() === 'dark';
+    btn.textContent = dark ? '☀ 浅色' : '☾ 深色';
+    btn.setAttribute('aria-label', dark ? '切换到浅色主题' : '切换到深色主题');
+  }
+  btn.addEventListener('click', function(){
+    var next = current() === 'dark' ? 'light' : 'dark';
+    root.setAttribute('data-theme', next);
+    try{ localStorage.setItem('theme', next); }catch(e){}
+    paint();
+  });
+  if(mq.addEventListener) mq.addEventListener('change', function(){ if(!root.getAttribute('data-theme')) paint(); });
+  paint();
+})();
+</script>
+</body>
+</html>
