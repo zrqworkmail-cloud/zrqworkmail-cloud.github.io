@@ -149,9 +149,7 @@ footer{ margin-top:92px; border-top:1.5px solid var(--ink); }
 .foot a{ text-decoration:none; border-bottom:1px solid var(--rule); }
 .foot a:hover{ border-color:var(--ink); }
 
-/* ---------- 滚动进场（零依赖）
-   只用 opacity + transform，不动布局；
-   .js 类由内联脚本在首帧前挂上，JS 不执行时内容直接可见。 ---------- */
+/* ---------- 滚动进场：零依赖，JS 不执行时内容直接可见 ---------- */
 .js .head, .js .row, .js .two, .js .foot, .js h1 .line{ opacity:0 }
 .js .head.in, .js .row.in, .js .two.in, .js .foot.in, .js h1 .line.in{
   animation:revIn .62s cubic-bezier(.22,.61,.36,1) both;
@@ -348,21 +346,35 @@ h1 .line{ display:block }
 </script>
 
 <script>
-/* 滚动进场：进入视口时淡入上浮，同批元素错峰 55ms */
+/* 滚动进场：同批错峰 55ms */
 (function(){
   var els = [].slice.call(document.querySelectorAll('.head, .row, .two, .foot, h1 .line'));
   try{
     if(!('IntersectionObserver' in window)){ els.forEach(function(e){ e.classList.add('in'); }); return; }
-    var io = new IntersectionObserver(function(entries){
+    var io, pending = els.slice();
+    function show(el, delay){
+      el.style.animationDelay = (delay || 0) + 'ms';
+      el.classList.add('in');
+      var i = pending.indexOf(el);
+      if(i > -1) pending.splice(i, 1);
+      io.unobserve(el);
+    }
+    io = new IntersectionObserver(function(entries){
       var k = 0;
       entries.forEach(function(en){
-        if(!en.isIntersecting) return;
-        en.target.style.animationDelay = (k++ * 55) + 'ms';
-        en.target.classList.add('in');
-        io.unobserve(en.target);
+        if(en.isIntersecting) show(en.target, k++ * 55);
       });
     }, { rootMargin:'0px 0px -6% 0px', threshold:0.05 });
     els.forEach(function(e){ io.observe(e); });
+    /* 兜底：瞬时跳转会整屏跳过，IO 不一定回调；只要已进入视口就直接显示 */
+    function sweep(){
+      var h = window.innerHeight * 0.94;
+      for(var i = pending.length - 1; i >= 0; i--){
+        if(pending[i].getBoundingClientRect().top < h) show(pending[i], 0);
+      }
+    }
+    window.addEventListener('scroll', sweep, { passive:true });
+    sweep();
   }catch(err){
     document.documentElement.classList.remove('js');
   }
