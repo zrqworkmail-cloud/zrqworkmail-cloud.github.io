@@ -148,6 +148,11 @@ footer{ margin-top:92px; border-top:1.5px solid var(--ink); }
 .foot nav{ display:flex; gap:22px; font-size:13px; }
 .foot a{ text-decoration:none; border-bottom:1px solid var(--rule); }
 .foot a:hover{ border-color:var(--ink); }
+.foot .like{ font-family:var(--mono); font-size:11.5px; letter-spacing:.04em; color:var(--dim); background:none; border:0; border-bottom:1px solid transparent; padding:0 0 2px; cursor:pointer; display:inline-flex; align-items:baseline; gap:6px; transition:color .2s, border-color .2s; }
+.foot .like:hover{ color:var(--ink); border-color:var(--ink); }
+.foot .like .heart{ font-size:14px; line-height:1; }
+.foot .like.is-liked{ color:var(--ink); cursor:default; border-color:transparent; }
+.foot .like[hidden]{ display:none; }
 
 /* ---------- 滚动进场：零依赖，JS 不执行时内容直接可见 ---------- */
 .js .head, .js .row, .js .two, .js .foot, .js h1 .line{ opacity:0 }
@@ -318,6 +323,7 @@ h1 .line{ display:block }
   <footer>
     <div class="foot">
       <div class="sig">Ruoquan Zhou</div>
+      <button class="like" id="like" type="button" aria-pressed="false" aria-label="给这个页面点赞" hidden><span class="heart" aria-hidden="true">♡</span><span><span id="like-count">0</span> 人赞过</span></button>
       <nav>
         <a href="https://github.com/zrqworkmail-cloud/dev-notes" target="_blank" rel="noopener">笔记</a>
         <a href="https://github.com/zrqworkmail-cloud" target="_blank" rel="noopener">GitHub</a>
@@ -385,6 +391,47 @@ h1 .line{ display:block }
   }catch(err){
     document.documentElement.classList.remove('js');
   }
+})();
+</script>
+
+<script>
+/* 点赞：数据存在 Cloudflare Worker + KV；接口不通时按钮不显示 */
+(function(){
+  var btn = document.getElementById('like');
+  if(!btn || !window.fetch) return;
+  var num = document.getElementById('like-count');
+  var API = 'https://likes.zrqhelp.me';
+  var KEY = 'liked-zrqhelp-1';
+  var liked = false;
+  try{ liked = localStorage.getItem(KEY) === '1'; }catch(e){}
+
+  function setCount(n){ if(typeof n === 'number') num.textContent = n; }
+  function markLiked(){
+    btn.classList.add('is-liked');
+    btn.setAttribute('aria-pressed','true');
+    btn.disabled = true;
+    btn.querySelector('.heart').textContent = '♥';
+  }
+
+  if(liked) markLiked();
+
+  fetch(API + '/', { mode:'cors', cache:'no-store' })
+    .then(function(r){ if(!r.ok) throw new Error(r.status); return r.json(); })
+    .then(function(d){ setCount(d.count); btn.hidden = false; })
+    .catch(function(){ btn.hidden = true; });
+
+  btn.addEventListener('click', function(){
+    if(btn.disabled) return;
+    btn.disabled = true;
+    fetch(API + '/like', { method:'POST', mode:'cors', cache:'no-store' })
+      .then(function(r){ if(!r.ok) throw new Error(r.status); return r.json(); })
+      .then(function(d){
+        setCount(d.count);
+        try{ localStorage.setItem(KEY,'1'); }catch(e){}
+        markLiked();
+      })
+      .catch(function(){ btn.disabled = false; });
+  });
 })();
 </script>
 </body>
